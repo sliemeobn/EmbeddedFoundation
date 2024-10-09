@@ -9,19 +9,20 @@ let embeddedSwiftSettings: [SwiftSetting] = [
         "-wmo", "-disable-cmo",
         "-Xfrontend", "-gnone",
         "-Xfrontend", "-disable-stack-protector",
-        "-Xfrontend", "-emit-empty-object-file"
-    ])
+        "-Xfrontend", "-emit-empty-object-file",
+    ]),
 ]
 
 let embeddedCSettings: [CSetting] = [
-    .unsafeFlags(["-fdeclspec"])
+    .unsafeFlags(["-fdeclspec"]),
+    .define("__Embedded"),
 ]
 
 let linkerSettings: [LinkerSetting] = [
     .unsafeFlags([
         "-Xclang-linker", "-nostdlib",
-        "-Xlinker", "--no-entry"
-    ])
+        "-Xlinker", "--no-entry",
+    ]),
 ]
 
 let libcSettings: [CSetting] = [
@@ -41,7 +42,7 @@ let package = Package(
         .library(
             name: "Foundation",
             targets: [
-                "Foundation"
+                "Foundation",
             ]
         ),
     ],
@@ -49,7 +50,7 @@ let package = Package(
         .target(
             name: "Foundation",
             dependencies: [
-                "_CFoundation"
+                "_CFoundation",
             ],
             cSettings: embeddedCSettings,
             swiftSettings: embeddedSwiftSettings,
@@ -58,7 +59,7 @@ let package = Package(
         .target(
             name: "_CFoundation",
             dependencies: [
-                "dlmalloc"
+                "dlmalloc",
             ],
             cSettings: libcSettings
         ),
@@ -68,6 +69,7 @@ let package = Package(
         ),
         .testTarget(
             name: "FoundationTests",
-            dependencies: ["Foundation"]),
+            dependencies: ["Foundation"]
+        ),
     ]
 )
